@@ -739,8 +739,8 @@ export default function Home() {
     <div style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
       {activeResult ? (
         <div style={{ padding: "1.5rem" }}>
-          <div style={{ background: "#ffffff", borderRadius: "8px", boxShadow: "0 2px 40px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04)", overflow: "hidden" }}>
-            <div style={{ padding: "0.875rem 1.25rem", borderBottom: "1px solid rgba(0,0,0,0.06)", display: "flex", gap: "6px", flexWrap: "wrap" }}>
+          <div style={{ background: "rgba(249,249,247,0.9)", borderRadius: "8px", border: "1px solid rgba(138,132,124,0.18)", overflow: "hidden" }}>
+            <div style={{ padding: "0.875rem 1.25rem", borderBottom: "1px solid rgba(138,132,124,0.14)", display: "flex", gap: "6px", flexWrap: "wrap" }}>
               {activeResult.toolResults.map((t, i) => <ToolPill key={i} tool={t.tool} />)}
             </div>
             {flightList && airlines.length > 1 && (
@@ -895,7 +895,7 @@ export default function Home() {
       </div>
       {/* Input */}
       <div style={{ padding: "0.625rem 1rem", borderTop: "1px solid rgba(0,0,0,0.06)", flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "#F9F9F7", border: "1px solid #E5E5E5", borderRadius: "4px", padding: "0.45rem 0.75rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "rgba(249,249,247,0.9)", border: "1px solid rgba(138,132,124,0.18)", borderRadius: "4px", padding: "0.45rem 0.75rem", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.55)" }}>
           <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSubmit()} placeholder="Ask a follow-up…" style={{ flex: 1, background: "transparent", outline: "none", color: "#1A1A1A", fontSize: "0.85rem", fontFamily: "var(--font-geist-sans)" }} />
           <button onClick={() => handleSubmit()} disabled={isLoading || !input.trim()} style={{ color: input.trim() && !isLoading ? "#1A1A1A" : "#C8C8C4", transition: "color 0.15s", lineHeight: 1, background: "none", border: "none", cursor: "pointer" }}>
             {isLoading
@@ -909,14 +909,19 @@ export default function Home() {
   );
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "4rem 1.5rem", background: "#F9F9F7", position: "relative", overflow: "hidden" }}>
+    <div className="page-shell" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: hasStarted ? "2.2rem 1.5rem 3rem" : "4rem 1.5rem", background: "#F9F9F7", position: "relative", overflow: "hidden", transition: enableTransition ? "padding 0.4s ease" : "none" }}>
       <div aria-hidden="true" style={{ position: "fixed", inset: 0, backgroundImage: "url(/terrain.jpg)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.07, filter: "grayscale(100%) contrast(1.1)", pointerEvents: "none", userSelect: "none" }} />
 
-      <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: "3.5rem", width: "100%", maxWidth: hasStarted ? "1280px" : "36rem", transition: enableTransition ? "max-width 0.4s ease" : "none" }}>
+      <div className="content-root" style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center", gap: hasStarted ? "2.5rem" : "3.5rem", width: "100%", maxWidth: hasStarted ? "1280px" : "36rem", transition: enableTransition ? "max-width 0.4s ease, gap 0.4s ease" : "none" }}>
 
         {/* Wordmark — always present */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
-          <h1 style={{ fontFamily: "var(--font-playfair)", fontSize: "5.5rem", fontWeight: 400, letterSpacing: "-0.02em", lineHeight: 1, color: "#1A1A1A" }}>airside</h1>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" style={{ display: "block" }}>
+              <path d="M2.5 19.5l6.5-2.5 2-2.5 6.5-2.5-6-1.5-2-2.5 1-1 5.5 1.5L18 5l1.5 1.5-3 5 1.5 2.5 3.5 1.5-1 1.5-6-1-2 2-4 1.5Z" fill="#1A1A1A" opacity="0.85" />
+            </svg>
+            <h1 style={{ fontFamily: "var(--font-playfair)", fontSize: "5.5rem", fontWeight: 400, letterSpacing: "-0.02em", lineHeight: 1, color: "#1A1A1A" }}>airside</h1>
+          </div>
           <p style={{ fontFamily: "var(--font-geist-sans)", fontSize: "0.68rem", fontWeight: 400, letterSpacing: "0.22em", textTransform: "uppercase", color: "#9a9a96" }}>Search flights in plain English</p>
         </div>
 
@@ -926,7 +931,7 @@ export default function Home() {
           {/* Before: single column input + examples */}
           <div style={{ opacity: hasStarted ? 0 : 1, pointerEvents: hasStarted ? "none" : "auto", transition: "opacity 0.3s ease", position: hasStarted ? "absolute" : "relative", inset: 0 }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "#ffffff", border: "1px solid #E5E5E5", borderRadius: "4px", padding: "0.875rem 1rem", boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.07)" }}>
+              <div className="search-launch" style={{ display: "flex", alignItems: "center", gap: "10px", background: "rgba(249,249,247,0.9)", border: "1px solid rgba(138,132,124,0.18)", borderRadius: "4px", padding: "0.875rem 1rem" }}>
                 <input ref={landingInputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSubmit()} placeholder="Find me flights from Toronto to Miami tomorrow" style={{ flex: 1, background: "transparent", outline: "none", color: "#1A1A1A", fontSize: "0.9rem", fontFamily: "var(--font-geist-sans)" }} />
                 <button onClick={() => handleSubmit()} disabled={isLoading} style={{ color: input.trim() && !isLoading ? "#1A1A1A" : "#C8C8C4", transition: "color 0.15s", lineHeight: 1, background: "none", border: "none", cursor: "pointer" }}>
                   {isLoading
@@ -948,10 +953,10 @@ export default function Home() {
 
           {/* After: split box */}
           <div style={{ opacity: hasStarted ? 1 : 0, pointerEvents: hasStarted ? "auto" : "none", transition: "opacity 0.3s ease", position: hasStarted ? "relative" : "absolute", inset: 0 }}>
-            <div style={{ display: "flex", height: "calc(100vh - 280px)", minHeight: "420px", overflow: "hidden" }}>
+            <div className="split-area" style={{ display: "flex", height: "calc(100vh - 240px)", minHeight: "520px", overflow: "hidden", transition: enableTransition ? "height 0.4s ease" : "none" }}>
 
               {/* Left: conversation */}
-              <div style={{ width: "300px", flexShrink: 0, display: "flex", flexDirection: "column", background: "#ffffff", borderRight: "1px solid #D8D8D5" }}>
+              <div className="sidebar-pane" style={{ width: "300px", flexShrink: 0, display: "flex", flexDirection: "column", background: "rgba(249,249,247,0.9)", borderRight: "1px solid rgba(138,132,124,0.18)" }}>
                 <div style={{ padding: "0.75rem 1.25rem", borderBottom: "1px solid rgba(0,0,0,0.06)", display: "flex", alignItems: "center", justifyContent: "flex-end", flexShrink: 0 }}>
                   <button onClick={resetConversation} style={{ color: "#C8C8C4", lineHeight: 1, background: "none", border: "none", cursor: "pointer", transition: "color 0.15s", padding: "2px" }} onMouseEnter={(e) => (e.currentTarget.style.color = "#6b6b68")} onMouseLeave={(e) => (e.currentTarget.style.color = "#C8C8C4")} title="New conversation">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
@@ -961,7 +966,7 @@ export default function Home() {
               </div>
 
               {/* Right: results */}
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#F9F9F7", minWidth: 0 }}>
+              <div className="results-pane" style={{ flex: 1, display: "flex", flexDirection: "column", background: "#F9F9F7", minWidth: 0 }}>
                 {resultsPanel}
               </div>
 
@@ -981,6 +986,97 @@ export default function Home() {
         }
         .booking-favicon { filter: grayscale(1); opacity: 0.5; transition: filter 0.2s, opacity 0.2s; }
         .booking-link:hover .booking-favicon { filter: grayscale(0); opacity: 1; }
+
+        .page-shell {
+          width: 100%;
+        }
+
+        .content-root {
+          width: 100%;
+        }
+
+        .search-launch input {
+          min-width: 0;
+        }
+
+        .split-area {
+          width: 100%;
+        }
+
+        .sidebar-pane {
+          min-width: 0;
+        }
+
+        @media (max-width: 980px) {
+          .page-shell {
+            padding: 2rem 1rem 2.5rem;
+          }
+
+          .content-root {
+            gap: 2rem;
+            max-width: 100%;
+          }
+
+          .search-launch {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.75rem;
+          }
+
+          .search-launch input {
+            width: 100%;
+          }
+
+          .split-area {
+            flex-direction: column;
+            height: auto !important;
+            min-height: auto !important;
+          }
+
+          .sidebar-pane {
+            width: 100% !important;
+            border-right: none !important;
+            border-bottom: 1px solid rgba(138,132,124,0.18);
+          }
+
+          .results-pane {
+            width: 100%;
+          }
+
+          .content-root h1 {
+            font-size: 4rem;
+          }
+
+          .page-shell p {
+            font-size: 0.75rem;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .page-shell {
+            padding: 1.5rem 0.85rem 2rem;
+          }
+
+          .content-root {
+            gap: 1.5rem;
+          }
+
+          .search-launch {
+            padding: 0.75rem 0.85rem;
+          }
+
+          .search-launch input {
+            font-size: 0.9rem;
+          }
+
+          .prompt-row {
+            padding: 0.75rem 1rem;
+          }
+
+          .sidebar-pane {
+            border-bottom-width: 1px;
+          }
+        }
       `}</style>
     </div>
   );

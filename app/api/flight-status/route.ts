@@ -37,15 +37,15 @@ export async function POST(request: NextRequest) {
     aircraft?: { model: string; reg: string };
     departure: {
       airport: { iata?: string; name?: string; municipalityName?: string };
-      scheduledTime?: { local: string };
-      revisedTime?: { local: string };
+      scheduledTime?: { utc: string; local: string };
+      revisedTime?: { utc: string; local: string };
       terminal?: string;
       gate?: string;
     };
     arrival: {
       airport: { iata?: string; name?: string; municipalityName?: string };
-      scheduledTime?: { local: string };
-      revisedTime?: { local: string };
+      scheduledTime?: { utc: string; local: string };
+      revisedTime?: { utc: string; local: string };
       terminal?: string;
       gate?: string;
       baggageBelt?: string;
