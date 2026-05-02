@@ -223,28 +223,43 @@ function isArrivalInPast(flight: RawFlight) {
 
 const ACTIVE_STATUSES = new Set(["EnRoute", "Expected", "Scheduled", "Delayed", "Departed"]);
 
-function getTimeWindow(date: string): { from: string; to: string } {
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function getTimeWindows(date: string): Array<{ from: string; to: string }> {
   const todayUtc = new Date().toISOString().slice(0, 10);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const fmt = (d: Date) =>
+    `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}T${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:00`;
+
   if (date === todayUtc) {
     const now = new Date();
-    const pad = (n: number) => String(n).padStart(2, "0");
-    const fmt = (d: Date) =>
-      `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}T${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`;
-    return {
+    return [{
       from: fmt(new Date(now.getTime() - 6 * 3600_000)),
       to:   fmt(new Date(now.getTime() + 6 * 3600_000)),
-    };
+    }];
   }
-  return { from: `${date}T00:00`, to: `${date}T23:59` };
+
+  return [
+    { from: `${date}T00:00:00`, to: `${date}T11:59:59` },
+    { from: `${date}T12:00:00`, to: `${date}T23:59:59` },
+  ];
 }
 
 async function toolSearchDepartures(origin_iata: string, date: string, destination_iata?: string, active_only?: boolean) {
-  const { from, to } = getTimeWindow(date);
-  const data = await aeroFetch(
-    `/flights/airports/iata/${origin_iata}/${from}/${to}?direction=Departure&withAircraftImage=false&withLocation=false`
-  ) as { departures?: RawFlight[] } | null;
+  const windows = getTimeWindows(date);
+  const results: RawFlight[] = [];
 
-  let all = data?.departures ?? [];
+  for (const [index, window] of windows.entries()) {
+    const data = await aeroFetch(
+      `/flights/airports/iata/${origin_iata}/${window.from}/${window.to}?direction=Departure&withAircraftImage=false&withLocation=false`
+    ) as { departures?: RawFlight[] } | null;
+    results.push(...(data?.departures ?? []));
+    if (index < windows.length - 1) await delay(1200);
+  }
+
+  let all = results;
   if (active_only) all = all.filter((f) => ACTIVE_STATUSES.has(f.status));
   const filtered = destination_iata
     ? all.filter((f) => {
@@ -260,12 +275,18 @@ async function toolSearchDepartures(origin_iata: string, date: string, destinati
 }
 
 async function toolSearchArrivals(destination_iata: string, date: string, origin_iata?: string, active_only?: boolean) {
-  const { from, to } = getTimeWindow(date);
-  const data = await aeroFetch(
-    `/flights/airports/iata/${destination_iata}/${from}/${to}?direction=Arrival&withAircraftImage=false&withLocation=false`
-  ) as { arrivals?: RawFlight[] } | null;
+  const windows = getTimeWindows(date);
+  const results: RawFlight[] = [];
 
-  let all = data?.arrivals ?? [];
+  for (const [index, window] of windows.entries()) {
+    const data = await aeroFetch(
+      `/flights/airports/iata/${destination_iata}/${window.from}/${window.to}?direction=Arrival&withAircraftImage=false&withLocation=false`
+    ) as { arrivals?: RawFlight[] } | null;
+    results.push(...(data?.arrivals ?? []));
+    if (index < windows.length - 1) await delay(1200);
+  }
+
+  let all = results;
   if (active_only) {
     all = all.filter((f) => ACTIVE_STATUSES.has(f.status) && !isArrivalInPast(f));
   }
