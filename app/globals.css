@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F9F9F7;
+  --foreground: #1A1A1A;
 }
 
 @theme inline {
@@ -10,17 +10,39 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-serif: var(--font-playfair);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+input::placeholder {
+  color: #9a9a96;
+}
+
+.prompt-row .prompt-text {
+  color: #6b6b68;
+  font-size: 0.82rem;
+  transition: color 0.25s ease;
+}
+
+.prompt-row:hover .prompt-text {
+  color: #1A1A1A;
+}
+
+.prompt-row .prompt-arrow {
+  flex-shrink: 0;
+  color: #C8C8C4;
+  transition: color 0.25s ease;
+}
+
+.prompt-row:hover .prompt-arrow {
+  color: #6b6b68;
+}
+
+.flight-row:hover {
+  background: #f9fafb;
 }
